@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'lite-dam-secret-key-2024',
+      secretOrKey: configService.get<string>('JWT_SECRET'),
     });
   }
 
