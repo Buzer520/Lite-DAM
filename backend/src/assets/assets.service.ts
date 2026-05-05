@@ -10,19 +10,22 @@ import { Asset } from "./entities/asset.entity";
 import { UsersService } from "../users/users.service";
 import { AuditService } from "../audit/audit.service";
 import { UserRole } from "../users/entities/user.entity";
+import { ConfigService } from "@nestjs/config";
 import * as fs from "fs";
 import * as path from "path";
 
 @Injectable()
 export class AssetsService {
-  private readonly uploadsDir = path.join(process.cwd(), "uploads");
+  private readonly uploadsDir: string;
 
   constructor(
     @InjectRepository(Asset)
     private assetRepository: Repository<Asset>,
     private usersService: UsersService,
     private auditService: AuditService,
+    private configService: ConfigService,
   ) {
+    this.uploadsDir = this.configService.get<string>('UPLOAD_DIR') || path.join(process.cwd(), "uploads");
     if (!fs.existsSync(this.uploadsDir)) {
       fs.mkdirSync(this.uploadsDir, { recursive: true });
     }
