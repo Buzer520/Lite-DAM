@@ -65,9 +65,6 @@
             >
           </div>
         </el-form>
-        <div class="login-footer">
-          <p>默认超管账户：admin / admin123</p>
-        </div>
       </el-card>
     </transition>
   </div>
@@ -294,18 +291,5 @@ const handleLogin = async () => {
 .link-primary:hover {
   color: #4f46e5;
   text-decoration: underline;
-}
-
-.login-footer {
-  text-align: center;
-  padding: 16px;
-  border-top: 1px solid #f1f5f9;
-  margin-top: 10px;
-}
-
-.login-footer p {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 12px;
 }
 </style>
