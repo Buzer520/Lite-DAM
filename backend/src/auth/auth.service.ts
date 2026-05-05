@@ -33,16 +33,16 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const user = await this.usersService.findOneByUsername(loginDto.username);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('用户名或密码错误');
     }
 
     if (!user.isActive) {
-      throw new UnauthorizedException('Account is disabled');
+      throw new UnauthorizedException('账号已被禁用，请联系管理员');
     }
 
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('用户名或密码错误');
     }
 
     const payload = { username: user.username, sub: user.id, role: user.role };
