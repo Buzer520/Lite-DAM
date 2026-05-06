@@ -5,44 +5,52 @@
 </template>
 
 <script setup lang="ts">
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-import { useThemeStore } from './stores/theme'
-import { watch, onMounted } from 'vue'
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+import { useThemeStore } from "./stores/theme";
+import { watch, onMounted } from "vue";
 
-const themeStore = useThemeStore()
+const themeStore = useThemeStore();
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('themeColor')
-  const savedDarkMode = localStorage.getItem('darkMode') === 'true'
-  
+  const savedTheme = localStorage.getItem("themeColor");
+  const savedDarkMode = localStorage.getItem("darkMode") === "true";
+
   if (savedTheme) {
-    themeStore.setThemeColor(savedTheme)
+    themeStore.setThemeColor(savedTheme);
   }
   if (savedDarkMode) {
-    themeStore.setDarkMode(true)
+    themeStore.setDarkMode(true);
   }
-})
+});
 
-watch(() => themeStore.themeColor, (newColor) => {
-  document.documentElement.style.setProperty('--el-color-primary', newColor)
-  localStorage.setItem('themeColor', newColor)
-})
+watch(
+  () => themeStore.themeColor,
+  (newColor) => {
+    document.documentElement.style.setProperty("--el-color-primary", newColor);
+    localStorage.setItem("themeColor", newColor);
+  },
+);
 
-watch(() => themeStore.darkMode, (isDark) => {
-  if (isDark) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-  localStorage.setItem('darkMode', String(isDark))
-})
+watch(
+  () => themeStore.darkMode,
+  (isDark) => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("darkMode", String(isDark));
+  },
+);
 </script>
 
 <style>
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
 }
 
 #app {
@@ -53,26 +61,28 @@ body {
   border: none !important;
   border-radius: 16px !important;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
 }
 
 .el-message-box__header {
-  padding: 24px 24px 0 !important;
+  padding: 18px 20px 0 !important;
   border-bottom: none !important;
 }
 
 .el-message-box__title {
-  font-size: 18px !important;
+  font-size: 16px !important;
   font-weight: 700 !important;
   color: var(--text-primary, #1e293b) !important;
 }
 
 .el-message-box__headerbtn {
-  top: 20px !important;
-  right: 20px !important;
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 8px !important;
+  top: 16px !important;
+  right: 16px !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
   transition: all 0.2s ease !important;
 }
 
@@ -82,43 +92,43 @@ body {
 
 .el-message-box__headerbtn .el-message-box__close {
   color: #94a3b8 !important;
-  font-size: 18px !important;
+  font-size: 16px !important;
 }
 
 .el-message-box__content {
-  padding: 16px 24px 24px !important;
+  padding: 12px 20px 16px !important;
 }
 
 .el-message-box__container {
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
 .el-message-box__status {
-  font-size: 22px !important;
-  width: 22px !important;
-  height: 22px !important;
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .el-message-box__message {
-  font-size: 15px !important;
+  font-size: 14px !important;
   color: var(--text-secondary, #64748b) !important;
-  line-height: 1.6 !important;
+  line-height: 1.5 !important;
 }
 
 .el-message-box__btns {
-  padding: 0 24px 24px !important;
+  padding: 0 20px 18px !important;
   display: flex !important;
-  gap: 12px !important;
+  gap: 10px !important;
   justify-content: flex-end !important;
 }
 
 .el-message-box__btns .el-button {
-  min-width: 80px !important;
-  height: 38px !important;
-  border-radius: 10px !important;
-  font-size: 14px !important;
+  min-width: 72px !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
   font-weight: 500 !important;
-  padding: 0 20px !important;
+  padding: 0 16px !important;
   transition: all 0.2s ease !important;
 }
 
@@ -222,7 +232,9 @@ body {
 
 .dark .el-message-box {
   background: var(--card-bg, #1e293b) !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.08) !important;
 }
 
 .dark .el-message-box__title {
@@ -257,22 +269,38 @@ body {
 }
 
 .dark .el-message--success {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(16, 185, 129, 0.08)
+  ) !important;
   color: #6ee7b7 !important;
 }
 
 .dark .el-message--warning {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.15),
+    rgba(245, 158, 11, 0.08)
+  ) !important;
   color: #fcd34d !important;
 }
 
 .dark .el-message--error {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.15),
+    rgba(239, 68, 68, 0.08)
+  ) !important;
   color: #fca5a5 !important;
 }
 
 .dark .el-message--info {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.15),
+    rgba(99, 102, 241, 0.08)
+  ) !important;
   color: #a5b4fc !important;
 }
 </style>
