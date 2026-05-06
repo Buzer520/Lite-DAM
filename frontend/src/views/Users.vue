@@ -219,7 +219,7 @@ const handleToggleRole = async (row: any) => {
     const newRole = row.role === "user" ? "admin" : "user";
     const action = newRole === "admin" ? "提拔为管理员" : "降级为普通用户";
     await ElMessageBox.confirm(
-      `确定要${action}「${row.username}」吗？`,
+      `确定要将「${row.username}」${action}吗？`,
       "确认操作",
       { type: "warning" },
     );
