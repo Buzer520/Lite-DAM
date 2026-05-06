@@ -59,6 +59,20 @@ export class UsersController {
     return result;
   }
 
+  @Put("change-password")
+  async changePassword(
+    @Request() req,
+    @Body("oldPassword") oldPassword: string,
+    @Body("newPassword") newPassword: string,
+  ) {
+    await this.usersService.changePassword(
+      req.user.userId,
+      oldPassword,
+      newPassword,
+    );
+    return { message: "密码修改成功" };
+  }
+
   @Post("avatar")
   @UseInterceptors(
     FileInterceptor("avatar", {

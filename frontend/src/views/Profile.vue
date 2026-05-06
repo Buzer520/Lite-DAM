@@ -168,29 +168,6 @@
                     ></template>
                   </el-input>
 
-                  <!-- 密码强度指示器 -->
-                  <div
-                    class="password-strength"
-                    v-if="passwordForm.newPassword"
-                  >
-                    <div class="strength-bars">
-                      <div
-                        v-for="i in 3"
-                        :key="i"
-                        class="strength-bar"
-                        :class="{
-                          active: passwordStrength >= i,
-                          weak: passwordStrength === 1,
-                          medium: passwordStrength === 2,
-                          strong: passwordStrength === 3,
-                        }"
-                      ></div>
-                    </div>
-                    <span class="strength-text" :class="strengthTextClass">
-                      {{ strengthText }}
-                    </span>
-                  </div>
-
                   <!-- 密码要求提示 -->
                   <div class="password-requirements">
                     <div
@@ -204,6 +181,13 @@
                         <CircleClose v-else />
                       </el-icon>
                       <span>至少6个字符</span>
+                      <span
+                        class="strength-text-inline"
+                        :class="strengthTextClass"
+                        v-if="passwordForm.newPassword"
+                      >
+                        {{ strengthText }}
+                      </span>
                     </div>
                   </div>
                 </el-form-item>
@@ -393,6 +377,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useThemeStore } from "../stores/theme";
 import {
@@ -416,6 +401,7 @@ import {
 import api from "../utils/api";
 
 const themeStore = useThemeStore();
+const router = useRouter();
 const saving = ref(false);
 const uploadingAvatar = ref(false);
 const changingPassword = ref(false);
@@ -535,7 +521,7 @@ const handleChangePassword = async () => {
         oldPassword: passwordForm.value.oldPassword,
         newPassword: passwordForm.value.newPassword,
       });
-      ElMessage.success("密码修改成功");
+      ElMessage.success("密码修改成功，请重新登录");
       passwordForm.value = {
         oldPassword: "",
         newPassword: "",
@@ -543,6 +529,12 @@ const handleChangePassword = async () => {
       };
       passwordStrength.value = 0;
       passwordFormRef.value.resetFields();
+
+      setTimeout(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        router.push("/login");
+      }, 1500);
     } catch (error: any) {
       ElMessage.error(error.response?.data?.message || "密码修改失败");
     } finally {
@@ -815,8 +807,11 @@ const formatFileSize = (bytes: number) => {
 .password-strength {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--bg-color);
+  border-radius: 8px;
 }
 
 .strength-bars {
@@ -826,10 +821,10 @@ const formatFileSize = (bytes: number) => {
 }
 
 .strength-bar {
-  height: 4px;
+  height: 5px;
   flex: 1;
   background: var(--border-color);
-  border-radius: 2px;
+  border-radius: 3px;
   transition: all var(--transition-fast);
 }
 
@@ -846,7 +841,7 @@ const formatFileSize = (bytes: number) => {
 }
 
 .strength-text {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   min-width: 30px;
   text-align: right;
@@ -865,8 +860,8 @@ const formatFileSize = (bytes: number) => {
 }
 
 .password-requirements {
-  margin-top: 10px;
-  padding: 10px 12px;
+  margin-top: 12px;
+  padding: 10px 14px;
   background: var(--bg-color);
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -875,13 +870,31 @@ const formatFileSize = (bytes: number) => {
 .requirement-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 13px;
   color: var(--text-secondary);
   transition: all var(--transition-fast);
 }
 
 .requirement-item.met {
+  color: #10b981;
+}
+
+.strength-text-inline {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.strength-text-inline.weak {
+  color: #ef4444;
+}
+
+.strength-text-inline.medium {
+  color: #f59e0b;
+}
+
+.strength-text-inline.strong {
   color: #10b981;
 }
 

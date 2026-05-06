@@ -171,6 +171,20 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
+  async changePassword(
+    userId: number,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.findById(userId);
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      throw new BadRequestException("旧密码错误");
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.save(user);
+  }
+
   async remove(userId: number): Promise<void> {
     await this.userRepository.delete(userId);
   }
