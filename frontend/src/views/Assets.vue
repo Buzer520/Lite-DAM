@@ -102,7 +102,11 @@
           </div>
           <div
             class="file-icon"
-            v-if="!isImage(asset.mimeType) && !isVideo(asset.mimeType) && !asset._hovered"
+            v-if="
+              !isImage(asset.mimeType) &&
+              !isVideo(asset.mimeType) &&
+              !asset._hovered
+            "
           >
             <el-icon :size="48"><Document /></el-icon>
           </div>
@@ -373,14 +377,28 @@ const handleSearch = () => {
   fetchAssets();
 };
 
-const handleUploadSuccess = () => {
+const handleUploadSuccess = async () => {
   ElMessage.success("上传成功");
   fetchAssets();
+
+  try {
+    const response: any = await api.get("/users/profile");
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    localStorage.setItem("user", JSON.stringify({ ...userData, ...response }));
+    window.dispatchEvent(
+      new CustomEvent("user-updated", {
+        detail: { ...userData, ...response },
+      }),
+    );
+  } catch (error) {
+    console.error("Failed to refresh user data");
+  }
 };
 
 const handleUploadError = (error: any) => {
-  console.error('Upload error:', error);
-  const message = error?.response?.data?.message || error?.message || '上传失败';
+  console.error("Upload error:", error);
+  const message =
+    error?.response?.data?.message || error?.message || "上传失败";
   ElMessage.error(message);
 };
 
@@ -391,7 +409,7 @@ const handlePreview = (row: any) => {
 
 const handleDownload = async (row: any) => {
   try {
-    const response = await api.get(`/assets/${row.id}/download`, {
+    const response: any = await api.get(`/assets/${row.id}/download`, {
       responseType: "blob",
       transformResponse: [(data) => data],
     });

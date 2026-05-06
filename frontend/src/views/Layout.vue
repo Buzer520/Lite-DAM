@@ -110,6 +110,7 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useThemeStore } from "../stores/theme";
+import api from "../utils/api";
 import {
   Files,
   User,
@@ -143,7 +144,8 @@ const isSuperAdmin = computed(() => user.value.role === "super_admin");
 
 const storagePercent = computed(() => {
   if (!user.value.storageQuota) return 0;
-  const percent = ((user.value.storageUsed || 0) / user.value.storageQuota) * 100;
+  const percent =
+    ((user.value.storageUsed || 0) / user.value.storageQuota) * 100;
   if (percent > 0 && percent < 0.01) {
     return 0.01;
   }
@@ -160,18 +162,33 @@ const currentPageTitle = computed(() => {
   return titles[route.path] || "首页";
 });
 
-onMounted(() => {
+onMounted(async () => {
   const userData = localStorage.getItem("user");
   if (userData) {
     user.value = JSON.parse(userData);
   }
+
+  try {
+    const response: any = await api.get("/users/profile");
+    user.value = { ...user.value, ...response };
+    localStorage.setItem("user", JSON.stringify(user.value));
+  } catch (error) {
+    console.error("Failed to fetch user profile");
+  }
+
   const savedTheme = localStorage.getItem("themeColor");
   if (savedTheme) {
     themeStore.setThemeColor(savedTheme);
   }
 
   window.addEventListener("storage", handleStorageChange);
+  window.addEventListener("user-updated", handleUserUpdated as EventListener);
 });
+
+const handleUserUpdated = (event: Event) => {
+  const customEvent = event as CustomEvent;
+  user.value = { ...user.value, ...customEvent.detail };
+};
 
 const handleStorageChange = (event: StorageEvent) => {
   if (event.key === "user" && event.newValue) {

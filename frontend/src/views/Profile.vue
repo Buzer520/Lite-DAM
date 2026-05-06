@@ -286,10 +286,13 @@ const presetColors = [
 
 const storagePercentage = computed(() => {
   if (!profileForm.value.storageQuota) return 0;
-  return Math.round(
+  const percent =
     ((profileForm.value.storageUsed || 0) / profileForm.value.storageQuota) *
-      100,
-  );
+    100;
+  if (percent > 0 && percent < 0.01) {
+    return 0.01;
+  }
+  return Math.min(parseFloat(percent.toFixed(2)), 100);
 });
 
 const storageColors = computed(() => [
@@ -316,6 +319,9 @@ const updateProfile = async () => {
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     userData.nickname = profileForm.value.nickname;
     localStorage.setItem("user", JSON.stringify(userData));
+    window.dispatchEvent(new CustomEvent("user-updated", {
+      detail: userData,
+    }));
     ElMessage.success("保存成功");
   } catch (error: any) {
     ElMessage.error(error.response?.data?.message || "更新失败");
