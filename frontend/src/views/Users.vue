@@ -27,7 +27,9 @@
         <el-table-column label="用户" min-width="220">
           <template #default="{ row }">
             <div class="user-cell">
+              <el-avatar v-if="row.avatar" :size="42" :src="row.avatar" />
               <el-avatar
+                v-else
                 :size="42"
                 :style="{
                   background: getAvatarGradient(row.id),
