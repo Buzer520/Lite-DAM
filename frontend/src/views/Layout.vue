@@ -67,8 +67,11 @@
             <div class="user-dropdown">
               <el-avatar
                 :size="34"
+                :src="user.avatar ? getAvatarUrl(user.avatar) : ''"
                 :style="{
-                  background: `linear-gradient(135deg, ${themeStore.themeColor}, ${themeStore.themeColor}88)`,
+                  background: user.avatar
+                    ? 'transparent'
+                    : `linear-gradient(135deg, ${themeStore.themeColor}, ${themeStore.themeColor}88)`,
                 }"
               >
                 {{ user.username?.charAt(0)?.toUpperCase() }}
@@ -134,7 +137,13 @@ const user = ref({
   nickname: "",
   storageUsed: 0,
   storageQuota: 0,
+  avatar: "",
 });
+
+const getAvatarUrl = (avatarPath: string) => {
+  if (!avatarPath) return "";
+  return avatarPath.startsWith("http") ? avatarPath : avatarPath;
+};
 
 const activeMenu = computed(() => route.path);
 const isAdmin = computed(

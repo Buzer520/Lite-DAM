@@ -4,16 +4,36 @@
       <div class="header-bg"></div>
       <div class="header-content">
         <div class="avatar-section">
-          <el-avatar
-            :size="80"
-            :style="{
-              background: `linear-gradient(135deg, ${themeStore.themeColor}, ${themeStore.themeColor}88)`,
-              fontSize: '28px',
-              border: '3px solid rgba(255,255,255,0.8)',
-            }"
-          >
-            {{ profileForm.username?.charAt(0)?.toUpperCase() }}
-          </el-avatar>
+          <div class="avatar-wrapper">
+            <el-avatar
+              :size="80"
+              :src="profileForm.avatar ? getAvatarUrl(profileForm.avatar) : ''"
+              :style="{
+                background: profileForm.avatar
+                  ? 'transparent'
+                  : `linear-gradient(135deg, ${themeStore.themeColor}, ${themeStore.themeColor}88)`,
+                fontSize: '28px',
+                border: '3px solid rgba(255,255,255,0.8)',
+              }"
+            >
+              {{ profileForm.username?.charAt(0)?.toUpperCase() }}
+            </el-avatar>
+            <el-upload
+              class="avatar-uploader"
+              name="avatar"
+              :action="uploadUrl"
+              :headers="uploadHeaders"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :on-error="handleAvatarError"
+              :before-upload="beforeAvatarUpload"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+            >
+              <div class="avatar-edit-overlay">
+                <el-icon><Camera /></el-icon>
+              </div>
+            </el-upload>
+          </div>
         </div>
         <div class="user-header-info">
           <div class="display-name-row">
@@ -255,11 +275,13 @@ import {
   Files,
   Collection,
   CircleCheck,
+  Camera,
 } from "@element-plus/icons-vue";
 import api from "../utils/api";
 
 const themeStore = useThemeStore();
 const saving = ref(false);
+const uploadingAvatar = ref(false);
 
 const profileForm = ref({
   id: 0,
@@ -269,9 +291,20 @@ const profileForm = ref({
   role: "user",
   storageUsed: 0,
   storageQuota: 0,
+  avatar: "",
 });
 
 const themeForm = ref({ color: "#6366f1" });
+
+const uploadUrl = computed(() => "/api/users/avatar");
+const uploadHeaders = computed(() => ({
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
+}));
+
+const getAvatarUrl = (avatarPath: string) => {
+  if (!avatarPath) return "";
+  return avatarPath.startsWith("http") ? avatarPath : avatarPath;
+};
 
 const presetColors = [
   "#6366f1",
@@ -342,6 +375,42 @@ const handleColorChange = async (color: string) => {
   }
 };
 
+const beforeAvatarUpload = (file: File) => {
+  const isImage = file.type.startsWith("image/");
+  const isLt5M = file.size / 1024 / 1024 < 5;
+  if (!isImage) {
+    ElMessage.error("只能上传图片文件!");
+    return false;
+  }
+  if (!isLt5M) {
+    ElMessage.error("图片大小不能超过 5MB!");
+    return false;
+  }
+  uploadingAvatar.value = true;
+  return true;
+};
+
+const handleAvatarSuccess = (response: any) => {
+  uploadingAvatar.value = false;
+  if (response && response.avatar) {
+    profileForm.value.avatar = response.avatar;
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    userData.avatar = response.avatar;
+    localStorage.setItem("user", JSON.stringify(userData));
+    window.dispatchEvent(
+      new CustomEvent("user-updated", {
+        detail: userData,
+      }),
+    );
+    ElMessage.success("头像上传成功");
+  }
+};
+
+const handleAvatarError = (error: any) => {
+  uploadingAvatar.value = false;
+  ElMessage.error(error?.message || "头像上传失败");
+};
+
 const getRoleLabel = (role: string) =>
   ({ user: "普通用户", admin: "管理员", super_admin: "超级管理员" })[role] ||
   "未知";
@@ -390,8 +459,42 @@ const formatFileSize = (bytes: number) => {
   flex-shrink: 0;
 }
 
-.avatar-section :deep(.el-avatar) {
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-wrapper :deep(.el-avatar) {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-uploader {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.avatar-uploader :deep(.el-upload) {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-edit-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  color: white;
+  font-size: 24px;
+}
+
+.avatar-wrapper:hover .avatar-edit-overlay {
+  opacity: 1;
 }
 
 .user-header-info {
@@ -885,5 +988,12 @@ const formatFileSize = (bytes: number) => {
 
 .dark .color-dot {
   border: 2px solid rgba(255, 255, 255, 0.1);
+}
+.dark .avatar-edit-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dark .avatar-wrapper :deep(.el-avatar) {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 </style>
