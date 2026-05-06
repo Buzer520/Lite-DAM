@@ -132,8 +132,15 @@
         <div class="asset-info">
           <div class="asset-name" :title="asset.name">{{ asset.name }}</div>
           <div class="asset-meta">
+            <el-tag
+              :type="getAssetTypeColor(asset.mimeType)"
+              size="small"
+              effect="light"
+              class="asset-type-tag"
+            >
+              {{ getAssetTypeLabel(asset.mimeType) }}
+            </el-tag>
             <span class="asset-size">{{ formatFileSize(asset.size) }}</span>
-            <span class="asset-date">{{ formatDate(asset.createdAt) }}</span>
           </div>
           <div class="asset-tags" v-if="asset.tags && asset.tags.length">
             <el-tag
@@ -177,6 +184,17 @@
             min-width="200"
             show-overflow-tooltip
           />
+          <el-table-column label="类型" width="100">
+            <template #default="{ row }">
+              <el-tag
+                :type="getAssetTypeColor(row.mimeType)"
+                size="small"
+                effect="light"
+              >
+                {{ getAssetTypeLabel(row.mimeType) }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="上传者" width="120">
             <template #default="{ row }">
               <div class="uploader-info">
@@ -491,6 +509,25 @@ const handleDelete = async (row: any) => {
 const isImage = (mimeType: string) => mimeType?.startsWith("image/");
 const isVideo = (mimeType: string) => mimeType?.startsWith("video/");
 
+const getAssetTypeLabel = (mimeType: string) => {
+  if (!mimeType) return "未知";
+  if (mimeType.startsWith("image/")) return "图片";
+  if (mimeType.startsWith("video/")) return "视频";
+  if (mimeType.startsWith("audio/")) return "音频";
+  if (mimeType.includes("pdf")) return "PDF";
+  if (mimeType.includes("zip") || mimeType.includes("rar")) return "压缩包";
+  return "文件";
+};
+
+const getAssetTypeColor = (mimeType: string) => {
+  if (!mimeType) return "info";
+  if (mimeType.startsWith("image/")) return "success";
+  if (mimeType.startsWith("video/")) return "warning";
+  if (mimeType.startsWith("audio/")) return "";
+  if (mimeType.includes("pdf")) return "danger";
+  return "info";
+};
+
 const getPreviewUrl = (row: any) =>
   `/api/assets/${row.id}/file?token=${localStorage.getItem("token")}`;
 
@@ -701,10 +738,17 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 
 .asset-meta {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   font-size: 12px;
   color: var(--text-secondary);
   margin-bottom: 8px;
+  gap: 6px;
+}
+
+.asset-type-tag {
+  font-size: 11px !important;
+  flex-shrink: 0;
 }
 
 .asset-tags {
