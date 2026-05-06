@@ -23,20 +23,29 @@
             </el-input>
           </div>
           <div class="view-toggle">
-            <el-button-group>
-              <el-button
-                :type="viewMode === 'grid' ? 'primary' : ''"
+            <div class="toggle-container">
+              <div
+                class="toggle-slider"
+                :style="{
+                  transform:
+                    viewMode === 'grid' ? 'translateX(0)' : 'translateX(100%)',
+                }"
+              ></div>
+              <button
+                class="toggle-btn"
+                :class="{ active: viewMode === 'grid' }"
                 @click="viewMode = 'grid'"
               >
                 <el-icon><Grid /></el-icon>
-              </el-button>
-              <el-button
-                :type="viewMode === 'list' ? 'primary' : ''"
+              </button>
+              <button
+                class="toggle-btn"
+                :class="{ active: viewMode === 'list' }"
                 @click="viewMode = 'list'"
               >
                 <el-icon><List /></el-icon>
-              </el-button>
-            </el-button-group>
+              </button>
+            </div>
           </div>
           <el-upload
             action="/api/assets/upload"
@@ -539,6 +548,57 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 
 .search-box {
   width: 280px;
+}
+
+.toggle-container {
+  position: relative;
+  display: flex;
+  background: var(--bg-color);
+  border-radius: 12px;
+  padding: 3px;
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  background: var(--primary-color);
+  border-radius: 9px;
+  transition: transform var(--transition-normal);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.toggle-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+  padding: 0;
+}
+
+.toggle-btn.active {
+  color: white;
+}
+
+.toggle-btn:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+.toggle-btn .el-icon {
+  font-size: 16px;
 }
 
 .upload-btn {
