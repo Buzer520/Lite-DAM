@@ -90,7 +90,7 @@ const formatDateTime = (d: string) => new Date(d).toLocaleString('zh-CN')
 
 <style scoped>
 .audit-page { 
-  max-width: 1000px; 
+  width: 100%; 
   margin: 0 auto; 
   display: flex;
   flex-direction: column;

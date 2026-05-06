@@ -6,13 +6,13 @@
         <div class="avatar-section">
           <div class="avatar-wrapper">
             <el-avatar
-              :size="80"
+              :size="64"
               :src="profileForm.avatar ? getAvatarUrl(profileForm.avatar) : ''"
               :style="{
                 background: profileForm.avatar
                   ? 'transparent'
                   : `linear-gradient(135deg, ${themeStore.themeColor}, ${themeStore.themeColor}88)`,
-                fontSize: '28px',
+                fontSize: '24px',
                 border: '3px solid rgba(255,255,255,0.8)',
               }"
             >
@@ -82,6 +82,13 @@
                 <el-input v-model="profileForm.email" disabled>
                   <template #prefix
                     ><el-icon><Message /></el-icon
+                  ></template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="手机号">
+                <el-input v-model="profileForm.phone" disabled>
+                  <template #prefix
+                    ><el-icon><Phone /></el-icon
                   ></template>
                 </el-input>
               </el-form-item>
@@ -194,7 +201,6 @@
           <div class="theme-row">
             <div class="theme-label">
               <span class="label">主题颜色</span>
-              <p class="description">选择你喜欢的系统主色调</p>
             </div>
             <div class="theme-colors">
               <div
@@ -237,11 +243,10 @@
               </el-tooltip>
             </div>
           </div>
-          <el-divider />
+          <el-divider style="margin: 8px 0" />
           <div class="theme-row">
             <div class="theme-label">
               <span class="label">暗黑模式</span>
-              <p class="description">切换深色主题保护眼睛</p>
             </div>
             <el-switch v-model="themeStore.darkMode" size="large">
               <template #active-action
@@ -265,6 +270,7 @@ import { useThemeStore } from "../stores/theme";
 import {
   User,
   Message,
+  Phone,
   EditPen,
   Check,
   Coin,
@@ -287,6 +293,7 @@ const profileForm = ref({
   id: 0,
   username: "",
   email: "",
+  phone: "",
   nickname: "",
   role: "user",
   storageUsed: 0,
@@ -432,7 +439,7 @@ const formatFileSize = (bytes: number) => {
 
 .profile-header {
   position: relative;
-  padding: 32px 40px 28px;
+  padding: 20px 32px 18px;
   overflow: hidden;
   border-radius: 12px;
 }
@@ -452,7 +459,7 @@ const formatFileSize = (bytes: number) => {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .avatar-section {
@@ -466,6 +473,9 @@ const formatFileSize = (bytes: number) => {
 
 .avatar-wrapper :deep(.el-avatar) {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  width: 64px !important;
+  height: 64px !important;
+  font-size: 24px !important;
 }
 
 .avatar-uploader {
@@ -510,7 +520,7 @@ const formatFileSize = (bytes: number) => {
 
 .display-name {
   margin: 0;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   color: white;
 }
@@ -526,15 +536,15 @@ const formatFileSize = (bytes: number) => {
 }
 
 .profile-body {
-  padding: 24px 0 0;
+  padding: 16px 0 0;
 }
 
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-auto-rows: 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .profile-grid .profile-card {
@@ -577,8 +587,8 @@ const formatFileSize = (bytes: number) => {
 
 .save-btn {
   border-radius: 10px !important;
-  height: 42px;
-  padding: 0 28px;
+  height: 36px;
+  padding: 0 24px;
   font-weight: 500;
 }
 
@@ -609,14 +619,14 @@ const formatFileSize = (bytes: number) => {
 .storage-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 8px 0;
+  gap: 14px;
+  padding: 4px 0;
 }
 
 .storage-summary {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .summary-info {
@@ -631,7 +641,7 @@ const formatFileSize = (bytes: number) => {
 }
 
 .summary-percent {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   background: linear-gradient(
     135deg,
@@ -668,14 +678,14 @@ const formatFileSize = (bytes: number) => {
 .storage-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
 .storage-card-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 12px;
+  padding: 12px 10px;
   background: var(--bg-color);
   border-radius: 12px;
   transition: all var(--transition-fast);
@@ -687,14 +697,14 @@ const formatFileSize = (bytes: number) => {
 }
 
 .card-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  margin-bottom: 12px;
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
 .storage-card-item.used .card-icon {
@@ -736,24 +746,24 @@ const formatFileSize = (bytes: number) => {
 
 .card-value {
   font-weight: 700;
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text-primary);
 }
 
 .card-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
 }
 
 .theme-section {
-  padding: 0 10px;
+  padding: 0 8px;
 }
 
 .theme-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
+  padding: 8px 0;
 }
 
 .theme-label .label {
@@ -801,22 +811,27 @@ const formatFileSize = (bytes: number) => {
 }
 
 :deep(.el-card__header) {
-  padding: 16px 20px !important;
+  padding: 12px 16px !important;
   border-bottom: 1px solid var(--border-color) !important;
 }
 
 :deep(.el-card__body) {
-  padding: 20px !important;
+  padding: 14px 16px !important;
 }
 
 :deep(.el-form-item__label) {
   font-weight: 500 !important;
   color: var(--text-secondary) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
+  margin-bottom: 4px !important;
 }
 
 :deep(.el-form-item__content) {
-  margin-top: 6px !important;
+  margin-top: 2px !important;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 10px !important;
 }
 
 .storage-visual :deep(.el-progress__text) {

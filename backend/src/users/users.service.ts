@@ -98,6 +98,7 @@ export class UsersService {
       "user.id",
       "user.username",
       "user.email",
+      "user.phone",
       "user.role",
       "user.isActive",
       "user.nickname",

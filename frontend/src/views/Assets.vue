@@ -545,7 +545,7 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 
 <style scoped>
 .assets-page {
-  max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -646,14 +646,14 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 
 .assets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
   margin-bottom: 24px;
 }
 
 .asset-card {
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border-color);
   transition: all var(--transition-normal);
@@ -669,7 +669,7 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 .asset-preview {
   position: relative;
   width: 100%;
-  height: 160px;
+  height: 130px;
   background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
   display: flex;
   align-items: center;
@@ -723,31 +723,31 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 }
 
 .asset-info {
-  padding: 14px;
+  padding: 10px 12px;
 }
 
 .asset-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .asset-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   gap: 6px;
 }
 
 .asset-type-tag {
-  font-size: 11px !important;
+  font-size: 10px !important;
   flex-shrink: 0;
 }
 
@@ -758,7 +758,7 @@ const formatDateTime = (date: string) => new Date(date).toLocaleString("zh-CN");
 }
 
 .asset-tag {
-  font-size: 11px !important;
+  font-size: 10px !important;
 }
 
 .assets-list {

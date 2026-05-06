@@ -40,7 +40,12 @@
               </el-avatar>
               <div class="user-info">
                 <div class="user-name">{{ row.username }}</div>
-                <div class="user-email">{{ row.email }}</div>
+                <div class="user-meta">
+                  <span class="user-email">{{ row.email }}</span>
+                  <span v-if="row.phone" class="user-phone">{{
+                    row.phone
+                  }}</span>
+                </div>
               </div>
             </div>
           </template>
@@ -307,7 +312,7 @@ const formatDate = (d: string) => new Date(d).toLocaleDateString("zh-CN");
 
 <style scoped>
 .users-page {
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -352,15 +357,28 @@ const formatDate = (d: string) => new Date(d).toLocaleDateString("zh-CN");
 .user-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 .user-name {
   font-weight: 600;
   color: var(--text-primary);
   font-size: 14px;
 }
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 .user-email {
   font-size: 12px;
   color: var(--text-secondary);
+}
+.user-phone {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
 }
 
 .text-muted {
