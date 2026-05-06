@@ -25,19 +25,31 @@ export class AssetsController {
     storage: diskStorage({
       destination: uploadsDir,
       filename: (req, file, cb) => {
-        const sanitizedName = encodeURIComponent(file.originalname).replace(/%20/g, '-');
-        const fileName = `${Date.now()}-${sanitizedName}`;
-        cb(null, fileName);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, `${uniqueSuffix}${ext}`);
       },
     }),
     limits: { fileSize: 1024 * 1024 * 200 },
   }))
-  async upload(@UploadedFiles() files: Express.Multer.File[], @Request() req, @Body() body: any) {
+  async upload(@UploadedFiles() files: Express.Multer.File[], @Request() req) {
     const results = [];
     try {
+      const body = req.body || {};
+      console.log('Upload request - userId:', req.user?.userId, 'files:', files?.length, 'body:', body);
+      
+      if (!files || files.length === 0) {
+        throw new Error('No files uploaded');
+      }
+      
       for (const file of files) {
+        console.log('Processing file:', file.originalname, 'size:', file.size);
         const asset = await this.assetsService.create(
-          { name: body.name, tags: body.tags ? body.tags.split(',') : [], category: body.category },
+          {
+            name: body.name,
+            tags: body.tags ? String(body.tags).split(',').map((t: string) => t.trim()) : [],
+            category: body.category,
+          },
           req.user.userId,
           file,
         );
@@ -45,7 +57,7 @@ export class AssetsController {
       }
       return results;
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('Upload error details:', error.message, error.stack);
       throw error;
     }
   }
