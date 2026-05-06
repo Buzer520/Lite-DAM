@@ -1,8 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User, UserRole } from '../users/entities/user.entity';
-import * as bcrypt from 'bcrypt';
+import { Injectable, OnModuleInit } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User, UserRole } from "../users/entities/user.entity";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -13,6 +13,16 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit() {
     await this.createSuperAdmin();
+    await this.updateStorageQuota();
+  }
+
+  private async updateStorageQuota() {
+    const newQuota = 10737418240; // 10GB
+    await this.userRepository.update(
+      { storageQuota: 1073741824 },
+      { storageQuota: newQuota },
+    );
+    console.log("Storage quota updated to 10GB for existing users");
   }
 
   private async createSuperAdmin() {
@@ -21,17 +31,17 @@ export class SeedService implements OnModuleInit {
     });
 
     if (!existingSuperAdmin) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
+      const hashedPassword = await bcrypt.hash("admin123", 10);
       const superAdmin = this.userRepository.create({
-        username: 'admin',
-        email: 'admin@lite-dam.com',
+        username: "admin",
+        email: "admin@lite-dam.com",
         password: hashedPassword,
         role: UserRole.SUPER_ADMIN,
-        nickname: '系统管理员',
+        nickname: "系统管理员",
         isActive: true,
       });
       await this.userRepository.save(superAdmin);
-      console.log('Super admin account created: admin / admin123');
+      console.log("Super admin account created: admin / admin123");
     }
   }
 }

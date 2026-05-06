@@ -39,7 +39,7 @@ export class User {
   @Column({ default: 0 })
   storageUsed: number;
 
-  @Column({ default: 1073741824 })
+  @Column({ default: 10737418240 })
   storageQuota: number;
 
   @Column({ nullable: true })
