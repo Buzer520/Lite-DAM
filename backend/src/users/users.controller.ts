@@ -117,4 +117,11 @@ export class UsersController {
     await this.usersService.resetPassword(+id, newPassword);
     return { message: "Password reset successfully" };
   }
+
+  @Delete(":id")
+  @Roles(UserRole.SUPER_ADMIN)
+  async remove(@Param("id") id: string) {
+    await this.usersService.remove(+id);
+    return { message: "User deleted successfully" };
+  }
 }

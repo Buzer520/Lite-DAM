@@ -21,33 +21,79 @@
           </div>
           <p class="register-subtitle">注册后即可使用素材管理系统</p>
         </div>
-        <el-form @submit.prevent="handleRegister" :model="form" label-position="top" class="register-form">
+        <el-form
+          @submit.prevent="handleRegister"
+          :model="form"
+          label-position="top"
+          class="register-form"
+        >
           <el-form-item>
             <div class="input-wrapper">
               <el-icon class="input-icon"><User /></el-icon>
-              <el-input v-model="form.username" placeholder="用户名" size="large" clearable />
+              <el-input
+                v-model="form.username"
+                placeholder="用户名（必填）"
+                size="large"
+                clearable
+              />
             </div>
           </el-form-item>
           <el-form-item>
             <div class="input-wrapper">
               <el-icon class="input-icon"><Message /></el-icon>
-              <el-input v-model="form.email" type="email" placeholder="邮箱地址" size="large" clearable />
+              <el-input
+                v-model="form.email"
+                type="email"
+                placeholder="邮箱地址（可选）"
+                size="large"
+                clearable
+              />
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <div class="input-wrapper">
+              <el-icon class="input-icon"><Iphone /></el-icon>
+              <el-input
+                v-model="form.phone"
+                placeholder="手机号（可选）"
+                size="large"
+                clearable
+              />
             </div>
           </el-form-item>
           <el-form-item>
             <div class="input-wrapper">
               <el-icon class="input-icon"><Lock /></el-icon>
-              <el-input v-model="form.password" type="password" placeholder="设置密码" size="large" show-password />
+              <el-input
+                v-model="form.password"
+                type="password"
+                placeholder="设置密码"
+                size="large"
+                show-password
+              />
             </div>
           </el-form-item>
           <el-form-item>
             <div class="input-wrapper">
               <el-icon class="input-icon"><Lock /></el-icon>
-              <el-input v-model="form.confirmPassword" type="password" placeholder="确认密码" size="large" show-password @keyup.enter="handleRegister" />
+              <el-input
+                v-model="form.confirmPassword"
+                type="password"
+                placeholder="确认密码"
+                size="large"
+                show-password
+                @keyup.enter="handleRegister"
+              />
             </div>
           </el-form-item>
           <el-form-item class="submit-item">
-            <el-button type="primary" @click="handleRegister" size="large" :loading="loading" class="submit-btn">
+            <el-button
+              type="primary"
+              @click="handleRegister"
+              size="large"
+              :loading="loading"
+              class="submit-btn"
+            >
               <span v-if="!loading">注 册</span>
             </el-button>
           </el-form-item>
@@ -58,51 +104,64 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { UserFilled, User, Message, Lock, ArrowLeft } from '@element-plus/icons-vue'
-import api from '../utils/api'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import {
+  UserFilled,
+  User,
+  Message,
+  Lock,
+  ArrowLeft,
+  Iphone,
+} from "@element-plus/icons-vue";
+import api from "../utils/api";
 
-const router = useRouter()
-const loading = ref(false)
+const router = useRouter();
+const loading = ref(false);
 const form = ref({
-  username: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-})
+  username: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+});
 
 const handleRegister = async () => {
-  if (!form.value.username || !form.value.email || !form.value.password) {
-    ElMessage.warning('请填写所有必填字段')
-    return
+  if (!form.value.username) {
+    ElMessage.warning("请填写用户名");
+    return;
+  }
+  if (!form.value.password) {
+    ElMessage.warning("请填写密码");
+    return;
   }
   if (form.value.password !== form.value.confirmPassword) {
-    ElMessage.error('两次输入的密码不一致')
-    return
+    ElMessage.error("两次输入的密码不一致");
+    return;
   }
   if (form.value.password.length < 6) {
-    ElMessage.warning('密码长度至少6位')
-    return
+    ElMessage.warning("密码长度至少6位");
+    return;
   }
-  loading.value = true
+  loading.value = true;
   try {
-    const response: any = await api.post('/auth/register', {
-      username: form.value.username,
-      email: form.value.email,
+    const response: any = await api.post("/auth/register", {
+      username: form.value.username || undefined,
+      email: form.value.email || undefined,
+      phone: form.value.phone || undefined,
       password: form.value.password,
-    })
-    localStorage.setItem('token', response.access_token)
-    localStorage.setItem('user', JSON.stringify(response.user))
-    ElMessage.success('注册成功，欢迎加入！')
-    router.push('/')
+    });
+    localStorage.setItem("token", response.access_token);
+    localStorage.setItem("user", JSON.stringify(response.user));
+    ElMessage.success("注册成功，欢迎加入！");
+    router.push("/");
   } catch (error: any) {
-    ElMessage.error(error.response?.data?.message || '注册失败，请稍后重试')
+    ElMessage.error(error.response?.data?.message || "注册失败，请稍后重试");
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -167,10 +226,19 @@ const handleRegister = async () => {
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -30px) scale(1.05); }
-  50% { transform: translate(-20px, 20px) scale(0.95); }
-  75% { transform: translate(20px, 30px) scale(1.02); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% {
+    transform: translate(20px, 30px) scale(1.02);
+  }
 }
 
 .register-card {
@@ -241,13 +309,35 @@ const handleRegister = async () => {
 }
 
 .register-form {
-  padding: 0 10px;
+  padding: 0;
+}
+
+.register-form :deep(.el-form-item) {
+  margin-bottom: 16px;
+}
+
+.register-form :deep(.el-form-item:last-child) {
+  margin-bottom: 0;
+}
+
+.register-form :deep(.el-form-item__content) {
+  margin: 0 !important;
+  justify-content: stretch;
+}
+
+.register-form :deep(.el-input) {
+  width: 100%;
+}
+
+.register-form :deep(.el-input__wrapper) {
+  width: 100%;
 }
 
 .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .input-icon {

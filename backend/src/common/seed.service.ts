@@ -35,6 +35,7 @@ export class SeedService implements OnModuleInit {
       const superAdmin = this.userRepository.create({
         username: "admin",
         email: "admin@lite-dam.com",
+        phone: null,
         password: hashedPassword,
         role: UserRole.SUPER_ADMIN,
         nickname: "系统管理员",

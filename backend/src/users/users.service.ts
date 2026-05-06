@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User, UserRole } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User, UserRole } from "./entities/user.entity";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -12,20 +17,37 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.findOneByUsername(createUserDto.username);
+    const { username, email, phone, password } = createUserDto;
+
+    if (!username) {
+      throw new BadRequestException("用户名不能为空");
+    }
+
+    const existingUser = await this.findOneByUsername(username);
     if (existingUser) {
-      throw new ConflictException('Username already exists');
+      throw new ConflictException("用户名已存在");
     }
 
-    const existingEmail = await this.findOneByEmail(createUserDto.email);
-    if (existingEmail) {
-      throw new ConflictException('Email already exists');
+    if (email) {
+      const existingEmail = await this.findOneByEmail(email);
+      if (existingEmail) {
+        throw new ConflictException("邮箱已被注册");
+      }
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    
+    if (phone) {
+      const existingPhone = await this.findOneByPhone(phone);
+      if (existingPhone) {
+        throw new ConflictException("手机号已被注册");
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = this.userRepository.create({
-      ...createUserDto,
+      username,
+      email: email || null,
+      phone: phone || null,
       password: hashedPassword,
       role: UserRole.USER,
       isActive: true,
@@ -42,24 +64,61 @@ export class UsersService {
     return this.userRepository.findOne({ where: { email } });
   }
 
+  async findOneByPhone(phone: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { phone } });
+  }
+
+  async findOneByLoginIdentifier(
+    identifier: string,
+  ): Promise<User | undefined> {
+    return this.userRepository.findOne({
+      where: [
+        { username: identifier },
+        { email: identifier },
+        { phone: identifier },
+      ],
+    });
+  }
+
   async findById(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
     return user;
   }
 
-  async findAll(page = 1, limit = 20, search?: string): Promise<{ users: User[], total: number }> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
-    queryBuilder.select(['user.id', 'user.username', 'user.email', 'user.role', 'user.isActive', 'user.nickname', 'user.avatar', 'user.storageUsed', 'user.storageQuota', 'user.createdAt']);
-    
+  async findAll(
+    page = 1,
+    limit = 20,
+    search?: string,
+  ): Promise<{ users: User[]; total: number }> {
+    const queryBuilder = this.userRepository.createQueryBuilder("user");
+    queryBuilder.select([
+      "user.id",
+      "user.username",
+      "user.email",
+      "user.role",
+      "user.isActive",
+      "user.nickname",
+      "user.avatar",
+      "user.storageUsed",
+      "user.storageQuota",
+      "user.createdAt",
+    ]);
+
     if (search) {
-      queryBuilder.where('user.username LIKE :search OR user.email LIKE :search', { search: `%${search}%` });
+      queryBuilder.where(
+        "user.username LIKE :search OR user.email LIKE :search",
+        { search: `%${search}%` },
+      );
     }
 
-    queryBuilder.skip((page - 1) * limit).take(limit).orderBy('user.createdAt', 'DESC');
-    
+    queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy("user.createdAt", "DESC");
+
     const [users, total] = await queryBuilder.getManyAndCount();
 
     return { users, total };
@@ -77,9 +136,12 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async updateProfile(userId: number, updateDto: UpdateProfileDto): Promise<User> {
+  async updateProfile(
+    userId: number,
+    updateDto: UpdateProfileDto,
+  ): Promise<User> {
     const user = await this.findById(userId);
-    
+
     if (updateDto.nickname !== undefined) {
       user.nickname = updateDto.nickname;
     }
@@ -107,11 +169,16 @@ export class UsersService {
     user.password = await bcrypt.hash(newPassword, 10);
     return this.userRepository.save(user);
   }
+
+  async remove(userId: number): Promise<void> {
+    await this.userRepository.delete(userId);
+  }
 }
 
 export interface CreateUserDto {
-  username: string;
-  email: string;
+  username?: string;
+  email?: string;
+  phone?: string;
   password: string;
 }
 

@@ -1,7 +1,11 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "../users/users.service";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
@@ -19,6 +23,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         role: user.role,
         nickname: user.nickname,
         avatar: user.avatar,
@@ -31,18 +36,23 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const user = await this.usersService.findOneByUsername(loginDto.username);
+    const user = await this.usersService.findOneByLoginIdentifier(
+      loginDto.username,
+    );
     if (!user) {
-      throw new UnauthorizedException('用户名或密码错误');
+      throw new UnauthorizedException("用户名、邮箱或手机号错误");
     }
 
     if (!user.isActive) {
-      throw new UnauthorizedException('账号已被禁用，请联系管理员');
+      throw new UnauthorizedException("账号已被禁用，请联系管理员");
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('用户名或密码错误');
+      throw new UnauthorizedException("密码错误");
     }
 
     const payload = { username: user.username, sub: user.id, role: user.role };
@@ -52,6 +62,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         role: user.role,
         nickname: user.nickname,
         avatar: user.avatar,
@@ -65,8 +76,9 @@ export class AuthService {
 }
 
 export interface RegisterDto {
-  username: string;
-  email: string;
+  username?: string;
+  email?: string;
+  phone?: string;
   password: string;
 }
 

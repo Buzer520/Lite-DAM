@@ -92,7 +92,7 @@
             formatDate(row.createdAt)
           }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="420" fixed="right">
+        <el-table-column label="操作" width="360" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button
@@ -100,9 +100,10 @@
                 size="small"
                 @click="handleToggleRole(row)"
                 v-if="user.role === 'super_admin'"
+                class="action-text-btn"
               >
                 <el-icon><Refresh /></el-icon>
-                {{ row.role === "user" ? "提拔管理员" : "降级" }}
+                <span>{{ row.role === "user" ? "提拔" : "降级" }}</span>
               </el-button>
               <el-button
                 text
@@ -110,11 +111,12 @@
                 :type="row.isActive ? 'warning' : 'success'"
                 @click="handleToggleActive(row)"
                 v-if="user.role === 'super_admin'"
+                class="action-text-btn"
               >
                 <el-icon
                   ><component :is="row.isActive ? 'Lock' : 'Unlock'"
                 /></el-icon>
-                {{ row.isActive ? "封禁" : "解封" }}
+                <span>{{ row.isActive ? "封禁" : "解封" }}</span>
               </el-button>
               <el-button
                 text
@@ -122,9 +124,21 @@
                 type="info"
                 @click="handleResetPassword(row)"
                 v-if="user.role === 'super_admin'"
+                class="action-text-btn"
               >
                 <el-icon><Key /></el-icon>
-                重置密码
+                <span>重置密码</span>
+              </el-button>
+              <el-button
+                text
+                size="small"
+                type="danger"
+                @click="handleDelete(row)"
+                v-if="user.role === 'super_admin'"
+                class="action-text-btn delete-text-btn"
+              >
+                <el-icon><Delete /></el-icon>
+                <span>删除</span>
               </el-button>
             </div>
           </template>
@@ -147,7 +161,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { Search, Refresh, Lock, Unlock, Key } from "@element-plus/icons-vue";
+import {
+  Search,
+  Refresh,
+  Lock,
+  Unlock,
+  Key,
+  Delete,
+} from "@element-plus/icons-vue";
 import api from "../utils/api";
 
 const users = ref([]);
@@ -236,6 +257,21 @@ const handleResetPassword = async (row: any) => {
     ElMessage.success("密码重置成功");
   } catch (error) {
     if (error !== "cancel") ElMessage.error("重置密码失败");
+  }
+};
+
+const handleDelete = async (row: any) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除用户「${row.username}」吗？此操作不可恢复。`,
+      "确认删除",
+      { type: "error", confirmButtonText: "删除", cancelButtonText: "取消" },
+    );
+    await api.delete(`/users/${row.id}`);
+    ElMessage.success("删除成功");
+    fetchUsers();
+  } catch (error) {
+    if (error !== "cancel") ElMessage.error("删除失败");
   }
 };
 
@@ -379,8 +415,54 @@ const formatDate = (d: string) => new Date(d).toLocaleDateString("zh-CN");
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   white-space: nowrap;
+}
+
+.action-text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.action-text-btn:hover {
+  background: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.action-text-btn .el-icon {
+  font-size: 14px;
+}
+
+.action-text-btn.delete-text-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.action-text-btn[type="warning"]:hover {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+  border-color: rgba(245, 158, 11, 0.15);
+}
+
+.action-text-btn[type="success"]:hover {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.action-text-btn[type="info"]:hover {
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.15);
 }
 
 :deep(.users-table .el-table__header-wrapper th) {
@@ -390,5 +472,21 @@ const formatDate = (d: string) => new Date(d).toLocaleDateString("zh-CN");
 .dark .table-card {
   background: var(--card-bg) !important;
   border-color: var(--border-color) !important;
+}
+
+.dark .action-text-btn {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dark .action-text-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .action-text-btn.delete-text-btn:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
 }
 </style>

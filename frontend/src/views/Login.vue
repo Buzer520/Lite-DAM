@@ -28,7 +28,7 @@
               <el-icon class="input-icon"><User /></el-icon>
               <el-input
                 v-model="form.username"
-                placeholder="用户名"
+                placeholder="用户名 / 邮箱 / 手机号"
                 size="large"
                 clearable
               />
@@ -86,7 +86,7 @@ const form = ref({
 
 const handleLogin = async () => {
   if (!form.value.username || !form.value.password) {
-    ElMessage.warning("请填写用户名和密码");
+    ElMessage.warning("请填写登录账号和密码");
     return;
   }
   loading.value = true;
