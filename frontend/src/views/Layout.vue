@@ -23,23 +23,6 @@
           <span>审计日志</span>
         </el-menu-item>
       </el-menu>
-      <div class="sidebar-footer">
-        <div class="storage-info">
-          <div class="storage-label">
-            <el-icon><Coin /></el-icon>
-            <span>存储使用</span>
-          </div>
-          <el-progress
-            :percentage="storagePercent"
-            :stroke-width="6"
-            :status="storagePercent > 90 ? 'exception' : undefined"
-          />
-          <div class="storage-text">
-            {{ formatSize(user.storageUsed || 0) }} /
-            {{ formatSize(user.storageQuota || 0) }}
-          </div>
-        </div>
-      </div>
     </el-aside>
     <el-container class="main-wrapper">
       <el-header class="header">
@@ -322,7 +305,6 @@ const formatSize = (bytes: number) => {
 }
 
 .sidebar-menu {
-  flex: 1;
   padding: 16px 10px;
   border-top: 0.5px solid var(--border-color);
 }
