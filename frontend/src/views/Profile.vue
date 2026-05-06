@@ -319,9 +319,11 @@ const updateProfile = async () => {
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     userData.nickname = profileForm.value.nickname;
     localStorage.setItem("user", JSON.stringify(userData));
-    window.dispatchEvent(new CustomEvent("user-updated", {
-      detail: userData,
-    }));
+    window.dispatchEvent(
+      new CustomEvent("user-updated", {
+        detail: userData,
+      }),
+    );
     ElMessage.success("保存成功");
   } catch (error: any) {
     ElMessage.error(error.response?.data?.message || "更新失败");
@@ -731,5 +733,157 @@ const formatFileSize = (bytes: number) => {
     flex-direction: column;
     gap: 24px;
   }
+}
+
+.dark .profile-card {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark .storage-card-item {
+  background: #0b1120 !important;
+}
+
+.dark .storage-card-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .storage-card-item.used .card-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.3),
+    rgba(99, 102, 241, 0.15)
+  ) !important;
+  color: #818cf8 !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2) !important;
+}
+
+.dark .storage-card-item.total .card-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.25),
+    rgba(148, 163, 184, 0.1)
+  ) !important;
+  color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.15) !important;
+}
+
+.dark .storage-card-item.remaining .card-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.3),
+    rgba(16, 185, 129, 0.15)
+  ) !important;
+  color: #34d399 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark :deep(.el-input__wrapper) {
+  background-color: #0b1120 !important;
+  box-shadow: 0 0 0 1px var(--border-color) inset !important;
+}
+
+.dark :deep(.el-input__wrapper:hover) {
+  box-shadow: 0 0 0 1px var(--primary-light) inset !important;
+}
+
+.dark :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 2px var(--primary-color) inset !important;
+}
+
+.dark :deep(.el-input.is-disabled .el-input__wrapper) {
+  background-color: #0b1120 !important;
+  box-shadow: 0 0 0 1px var(--border-color) inset !important;
+}
+
+.dark :deep(.el-form-item__label) {
+  color: var(--text-secondary) !important;
+}
+
+.dark .summary-bar {
+  background: #0b1120 !important;
+}
+
+.dark .color-dot {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .custom-dot {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.dark :deep(.el-card) {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark :deep(.el-card__header) {
+  background: var(--card-bg) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+.dark :deep(.el-card__body) {
+  background: var(--card-bg) !important;
+}
+
+.dark :deep(.el-input__wrapper) {
+  background-color: #0b1120 !important;
+  box-shadow: 0 0 0 1px var(--border-color) inset !important;
+}
+
+.dark :deep(.el-input__inner) {
+  color: var(--text-primary) !important;
+}
+
+.dark :deep(.el-input.is-disabled .el-input__wrapper) {
+  background-color: #0b1120 !important;
+  box-shadow: 0 0 0 1px var(--border-color) inset !important;
+}
+
+.dark :deep(.el-input.is-disabled .el-input__inner) {
+  color: var(--text-secondary) !important;
+  -webkit-text-fill-color: var(--text-secondary) !important;
+}
+
+.dark :deep(.el-form-item__label) {
+  color: var(--text-secondary) !important;
+}
+
+.dark :deep(.el-button--primary) {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-dark)
+  ) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.dark :deep(.el-button--primary:hover) {
+  background: linear-gradient(
+    135deg,
+    var(--primary-light),
+    var(--primary-color)
+  ) !important;
+}
+
+.dark :deep(.el-divider) {
+  background-color: var(--border-color) !important;
+}
+
+.dark :deep(.el-switch) {
+  --el-switch-off-color: #334155;
+}
+
+.dark :deep(.el-color-picker__trigger) {
+  border-color: var(--border-color) !important;
+}
+
+.dark .summary-bar {
+  background: #0b1120 !important;
+}
+
+.dark .color-dot {
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 </style>
