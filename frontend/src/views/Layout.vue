@@ -143,9 +143,11 @@ const isSuperAdmin = computed(() => user.value.role === "super_admin");
 
 const storagePercent = computed(() => {
   if (!user.value.storageQuota) return 0;
-  return Math.round(
-    ((user.value.storageUsed || 0) / user.value.storageQuota) * 100,
-  );
+  const percent = ((user.value.storageUsed || 0) / user.value.storageQuota) * 100;
+  if (percent > 0 && percent < 0.01) {
+    return 0.01;
+  }
+  return Math.min(parseFloat(percent.toFixed(2)), 100);
 });
 
 const currentPageTitle = computed(() => {
@@ -167,7 +169,7 @@ onMounted(() => {
   if (savedTheme) {
     themeStore.setThemeColor(savedTheme);
   }
-  
+
   window.addEventListener("storage", handleStorageChange);
 });
 
