@@ -227,11 +227,12 @@ export class AssetsService {
       .getRawOne();
 
     const totalAssets = await this.assetRepository.count();
+    const userCount = await this.usersService.count();
 
     return {
       totalStorage: parseInt(totalStorage?.total || "0"),
       totalAssets,
-      userCount: 0,
+      userCount,
     };
   }
 }

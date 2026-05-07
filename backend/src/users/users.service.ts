@@ -88,6 +88,10 @@ export class UsersService {
     return user;
   }
 
+  async count(): Promise<number> {
+    return this.userRepository.count();
+  }
+
   async findAll(
     page = 1,
     limit = 20,
