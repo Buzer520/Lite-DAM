@@ -2,8 +2,8 @@
 
 # Lite-DAM 部署脚本
 # 服务器: Ubuntu 22.04
-# 域名: mygdsp.cn
-# IP: 8.146.232.81
+# 域名: mypsp.cn
+# IP: 8.146.232.61
 
 set -e
 

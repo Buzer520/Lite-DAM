@@ -1,12 +1,15 @@
 import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { AssetsModule } from "./assets/assets.module";
 import { AuditModule } from "./audit/audit.module";
 import { SeedService } from "./common/seed.service";
 import { AuditMiddleware } from "./common/middleware/audit.middleware";
+import { HealthController } from "./common/health.controller";
 import { User } from "./users/entities/user.entity";
 import { Asset } from "./assets/entities/asset.entity";
 import { AuditLog } from "./audit/entities/audit-log.entity";
@@ -16,6 +19,18 @@ import { AuditLog } from "./audit/entities/audit-log.entity";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: "short",
+        ttl: 60000,
+        limit: 10,
+      },
+      {
+        name: "long",
+        ttl: 600000,
+        limit: 100,
+      },
+    ]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
@@ -55,7 +70,14 @@ import { AuditLog } from "./audit/entities/audit-log.entity";
     AssetsModule,
     AuditModule,
   ],
-  providers: [SeedService],
+  controllers: [HealthController],
+  providers: [
+    SeedService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
