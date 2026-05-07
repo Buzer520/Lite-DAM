@@ -1,9 +1,9 @@
 # Lite-DAM 部署指南
 
 ## 服务器信息
-- **服务器**: 阿里云 Ubuntu 24.04
-- **IP地址**: 47.97.164.238
-- **域名**: mygdsp.cn
+- **服务器**: 阿里云 Ubuntu 22.04
+- **IP地址**: 8.146.232.61
+- **域名**: mygdsp.cn, mypsp.cn
 - **DNS记录**: 已配置 dns23.hichina.com
 
 ## 部署步骤
@@ -11,7 +11,7 @@
 ### 1. 登录服务器
 
 ```bash
-ssh root@47.97.164.238
+ssh root@8.146.232.61
 ```
 
 ### 2. 上传项目文件
@@ -20,7 +20,7 @@ ssh root@47.97.164.238
 
 ```bash
 # 使用 scp 上传
-scp -r /path/to/local/Lite-DAM root@47.97.164.238:/var/www/
+scp -r /path/to/local/Lite-DAM root@8.146.232.61:/var/www/
 
 # 或者使用 git 克隆（推荐）
 git clone https://github.com/your-username/lite-dam.git /var/www/lite-dam
