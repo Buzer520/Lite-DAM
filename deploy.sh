@@ -34,7 +34,7 @@ sudo chown $USER:$USER /var/www/lite-dam
 echo ""
 echo "[4/8] 克隆项目代码..."
 cd /var/www/lite-dam
-git clone https://github.com/your-username/lite-dam.git .
+git clone https://github.com/Buzer520/Lite-DAM.git .
 
 # 5. 安装依赖并构建
 echo ""
@@ -63,7 +63,7 @@ sudo systemctl reload nginx
 # 7. 获取 SSL 证书
 echo ""
 echo "[7/8] 获取 Let's Encrypt SSL 证书..."
-sudo certbot --nginx -d mypsp.cn -d www.mypsp.cn --agree-tos --email your-email@example.com
+sudo certbot --nginx -d mypsp.cn -d www.mypsp.cn --agree-tos --email 15972042515@163.com
 
 # 8. 配置 PM2 进程管理
 echo ""
