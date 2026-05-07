@@ -1,9 +1,10 @@
 # Lite-DAM 部署指南
 
 ## 服务器信息
+
 - **服务器**: 阿里云 Ubuntu 22.04
 - **IP地址**: 8.146.232.61
-- **域名**: mygdsp.cn, mypsp.cn
+- **域名**: mypsp.cn
 - **DNS记录**: 已配置 dns23.hichina.com
 
 ## 部署步骤
@@ -70,7 +71,7 @@ sudo systemctl reload nginx
 #### 4.4 获取 SSL 证书
 
 ```bash
-sudo certbot --nginx -d mygdsp.cn -d www.mygdsp.cn --agree-tos --email your-email@example.com
+sudo certbot --nginx -d mypsp.cn -d www.mypsp.cn --agree-tos --email your-email@example.com
 ```
 
 #### 4.5 配置 PM2
@@ -127,7 +128,7 @@ JWT_SECRET=your-strong-secret-key
 PORT=3000
 
 # CORS 域名
-CORS_ORIGIN=https://mygdsp.cn
+CORS_ORIGIN=https://mypsp.cn
 ```
 
 ### Nginx 配置
@@ -136,8 +137,8 @@ CORS_ORIGIN=https://mygdsp.cn
 
 ## 访问地址
 
-- **前端**: https://mygdsp.cn
-- **API文档**: https://mygdsp.cn/api/docs
+- **前端**: https://mypsp.cn
+- **API文档**: https://mypsp.cn/api/docs
 
 ## 故障排除
 

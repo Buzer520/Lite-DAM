@@ -9,7 +9,7 @@ set -e
 
 echo "========================================="
 echo "  Lite-DAM 部署脚本"
-echo "  域名: mygdsp.cn"
+echo "  域名: mypsp.cn"
 echo "  服务器IP: 8.146.232.61"
 echo "========================================="
 
@@ -63,7 +63,7 @@ sudo systemctl reload nginx
 # 7. 获取 SSL 证书
 echo ""
 echo "[7/8] 获取 Let's Encrypt SSL 证书..."
-sudo certbot --nginx -d mygdsp.cn -d www.mygdsp.cn --agree-tos --email your-email@example.com
+sudo certbot --nginx -d mypsp.cn -d www.mypsp.cn --agree-tos --email your-email@example.com
 
 # 8. 配置 PM2 进程管理
 echo ""
@@ -106,8 +106,8 @@ echo "  部署完成！"
 echo "========================================="
 echo ""
 echo "访问地址:"
-echo "  前端: https://mygdsp.cn"
-echo "  API文档: https://mygdsp.cn/api/docs"
+echo "  前端: https://mypsp.cn"
+echo "  API文档: https://mypsp.cn/api/docs"
 echo ""
 echo "管理命令:"
 echo "  pm2 status        # 查看服务状态"
