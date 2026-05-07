@@ -515,6 +515,35 @@ const handleChangePassword = async () => {
   if (!passwordFormRef.value) return;
   await passwordFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return;
+
+    if (profileForm.value.role === "super_admin") {
+      const { ElMessageBox } = await import("element-plus");
+      try {
+        await ElMessageBox.prompt(
+          "超级管理员修改密码需要安全验证，请输入答案：一筐什么蛋？",
+          "安全验证",
+          {
+            confirmButtonText: "验证",
+            cancelButtonText: "取消",
+            inputPlaceholder: "请输入答案",
+            inputValidator: (value: string) => {
+              if (!value || value.trim() === "") {
+                return "请输入答案";
+              }
+              if (value !== "一筐大卤蛋") {
+                return "答案不正确，请重新输入";
+              }
+              return true;
+            },
+          },
+        );
+      } catch (error: any) {
+        if (error === "cancel" || error === "close") {
+          return;
+        }
+      }
+    }
+
     changingPassword.value = true;
     try {
       await api.put("/users/change-password", {
