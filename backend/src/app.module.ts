@@ -23,12 +23,12 @@ import { AuditLog } from "./audit/entities/audit-log.entity";
       {
         name: "short",
         ttl: 60000,
-        limit: 10,
+        limit: 100,
       },
       {
         name: "long",
         ttl: 600000,
-        limit: 100,
+        limit: 500,
       },
     ]),
     TypeOrmModule.forRootAsync({

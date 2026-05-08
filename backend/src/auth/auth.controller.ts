@@ -14,7 +14,7 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(ThrottlerGuard)
-  @Throttle({ short: { ttl: 60000, limit: 5 }, long: { ttl: 300000, limit: 10 } })
+  @Throttle({ short: { ttl: 60000, limit: 20 }, long: { ttl: 300000, limit: 50 } })
   async login(@Body() loginDto: any) {
     return this.authService.login(loginDto);
   }
